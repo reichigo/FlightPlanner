@@ -1,6 +1,8 @@
 # 🫢 Before anything else
 I sometimes like to joke around and play games too. You might find some issues in my application, but there’s one that’s serious can you figure it out? ❤️
 
+---
+
 # ✈️ FlightPlanner
 
 A comprehensive flight planning application built with **ASP.NET Core 10.0** and **MongoDB**, following **Clean Architecture** principles. This system allows users to manage airports, aircraft, and flights while automatically calculating distances, flight times, and fuel requirements.
@@ -10,6 +12,11 @@ A comprehensive flight planning application built with **ASP.NET Core 10.0** and
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
+
+
+# 🔥👀 Azure Deployment
+I deployed it on Azure using the free App Service, so it might be a bit slow. Here’s the link https://flightplannerweb-dcb3fsgrfbanfhfu.westeurope-01.azurewebsites.net/ you can test it.
+
 
 ## 📋 Table of Contents
 
