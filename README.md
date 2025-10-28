@@ -16,6 +16,7 @@ A comprehensive flight planning application built with **ASP.NET Core 10.0** and
 
 # 🔥👀 Azure Deployment
 I deployed it on Azure using the free App Service, so it might be a bit slow. Here’s the link https://flightplannerweb-dcb3fsgrfbanfhfu.westeurope-01.azurewebsites.net/ you can test it.
+It’s not on APIM ’cause APIM is pricey and, well, my wallet isn’t. 💵💰💳
 
 
 ## 📋 Table of Contents
