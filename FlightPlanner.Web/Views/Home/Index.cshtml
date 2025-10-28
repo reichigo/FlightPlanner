@@ -1,0 +1,89 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-3 fw-bold mb-3">
+        <i class="bi bi-airplane-fill text-primary"></i>
+        Welcome to Flight Planner
+    </h1>
+    <p class="lead text-muted">Professional Flight Planning and Management System</p>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card h-100 text-center p-4">
+            <div class="card-body">
+                <i class="bi bi-geo-alt-fill text-primary" style="font-size: 3rem;"></i>
+                <h3 class="card-title mt-3">Airports</h3>
+                <p class="card-text">Manage airports with GPS coordinates and IATA codes</p>
+                <a asp-controller="Airports" asp-action="Index" class="btn btn-primary">
+                    <i class="bi bi-arrow-right me-2"></i>View Airports
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 text-center p-4">
+            <div class="card-body">
+                <i class="bi bi-airplane text-primary" style="font-size: 3rem;"></i>
+                <h3 class="card-title mt-3">Aircrafts</h3>
+                <p class="card-text">Configure aircraft specifications and fuel consumption</p>
+                <a asp-controller="Aircrafts" asp-action="Index" class="btn btn-primary">
+                    <i class="bi bi-arrow-right me-2"></i>View Aircrafts
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 text-center p-4">
+            <div class="card-body">
+                <i class="bi bi-calendar-check-fill text-primary" style="font-size: 3rem;"></i>
+                <h3 class="card-title mt-3">Flights</h3>
+                <p class="card-text">Plan flights with automatic distance and fuel calculations</p>
+                <a asp-controller="Flights" asp-action="Index" class="btn btn-primary">
+                    <i class="bi bi-arrow-right me-2"></i>View Flights
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card p-4">
+            <div class="card-body">
+                <h3 class="card-title">
+                    <i class="bi bi-bar-chart-fill text-primary me-2"></i>
+                    Flight Reports
+                </h3>
+                <p class="card-text">View comprehensive reports with distance calculations, fuel estimates, and flight statistics</p>
+                <a asp-controller="Flights" asp-action="Report" class="btn btn-primary">
+                    <i class="bi bi-file-earmark-bar-graph me-2"></i>View Reports
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5 p-4 bg-light rounded">
+    <h4 class="mb-3"><i class="bi bi-info-circle me-2"></i>Features</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-unstyled">
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>GPS-based distance calculation (Haversine formula)</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Automatic fuel consumption estimates</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Flight duration calculations</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <ul class="list-unstyled">
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Comprehensive flight reports</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Airport and aircraft management</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Real-time data from MongoDB</li>
+            </ul>
+        </div>
+    </div>
+</div>

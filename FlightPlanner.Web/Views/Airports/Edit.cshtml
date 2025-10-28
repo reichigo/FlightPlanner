@@ -1,0 +1,74 @@
+@model FlightPlanner.Web.Models.CreateAirportViewModel
+
+@{
+    ViewData["Title"] = "Edit Airport";
+    var airportId = ViewData["AirportId"] as Guid?;
+}
+
+<h1><i class="bi bi-pencil text-warning me-2"></i>Edit Airport</h1>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Edit" asp-route-id="@airportId" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Iata" class="form-label">IATA Code</label>
+                        <input asp-for="Iata" class="form-control" placeholder="e.g., JFK" maxlength="3" />
+                        <span asp-validation-for="Iata" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Airport Name</label>
+                        <input asp-for="Name" class="form-control" placeholder="e.g., John F. Kennedy International Airport" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Latitude" class="form-label">Latitude</label>
+                            <input asp-for="Latitude" class="form-control" placeholder="e.g., 40.6413" step="0.0001" />
+                            <span asp-validation-for="Latitude" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Longitude" class="form-label">Longitude</label>
+                            <input asp-for="Longitude" class="form-control" placeholder="e.g., -73.7781" step="0.0001" />
+                            <span asp-validation-for="Longitude" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-check-circle me-2"></i>Update Airport
+                        </button>
+                        <a asp-action="Details" asp-route-id="@airportId" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-info-circle me-2"></i>Tips</h5>
+                <ul class="small">
+                    <li>IATA code must be 3 letters (e.g., JFK, LAX, LHR)</li>
+                    <li>Latitude ranges from -90 to 90</li>
+                    <li>Longitude ranges from -180 to 180</li>
+                    <li>Use decimal degrees format</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

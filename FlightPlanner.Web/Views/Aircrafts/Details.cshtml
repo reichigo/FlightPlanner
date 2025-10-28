@@ -1,0 +1,56 @@
+@model FlightPlanner.Web.Models.AircraftViewModel
+
+@{
+    ViewData["Title"] = "Aircraft Details";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h2 class="mb-0">✈️ Aircraft Details</h2>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">ID</dt>
+                        <dd class="col-sm-8"><code>@Model.Id</code></dd>
+
+                        <dt class="col-sm-4">Model</dt>
+                        <dd class="col-sm-8"><strong>@Model.Model</strong></dd>
+
+                        <dt class="col-sm-4">Cruise Speed</dt>
+                        <dd class="col-sm-8">@Model.CruiseSpeedKts.ToString("N0") knots</dd>
+
+                        <dt class="col-sm-4">Fuel Burn Rate</dt>
+                        <dd class="col-sm-8">@Model.FuelBurnPerHourKg.ToString("N2") kg/hour</dd>
+
+                        <dt class="col-sm-4">Maximum Takeoff Fuel</dt>
+                        <dd class="col-sm-8">@Model.TakeoffFuelKg.ToString("N2") kg</dd>
+                    </dl>
+
+                    <hr />
+
+                    <div class="alert alert-info">
+                        <h5>📊 Performance Metrics</h5>
+                        <ul class="mb-0">
+                            <li><strong>Range (approx):</strong> @((Model.TakeoffFuelKg / Model.FuelBurnPerHourKg * Model.CruiseSpeedKts * 1.852).ToString("N0")) km</li>
+                            <li><strong>Endurance:</strong> @((Model.TakeoffFuelKg / Model.FuelBurnPerHourKg).ToString("N1")) hours</li>
+                            <li><strong>Cruise Speed:</strong> @((Model.CruiseSpeedKts * 1.852).ToString("N0")) km/h</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                        <a asp-controller="Flights" asp-action="Create" asp-route-aircraftId="@Model.Id" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Create Flight with this Aircraft
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

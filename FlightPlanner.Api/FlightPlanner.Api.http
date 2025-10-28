@@ -1,0 +1,156 @@
+### ============================================
+### AIRPORTS
+### ============================================
+
+### Create Airport - JFK (New York)
+POST http://localhost:5062/airports
+Content-Type: application/json
+
+{
+  "iata": "JFK",
+  "name": "John F. Kennedy International Airport",
+  "latitude": 40.6413,
+  "longitude": -73.7781
+}
+
+### Create Airport - LAX (Los Angeles)
+POST http://localhost:5062/airports
+Content-Type: application/json
+
+{
+  "iata": "LAX",
+  "name": "Los Angeles International Airport",
+  "latitude": 33.9416,
+  "longitude": -118.4085
+}
+
+### Create Airport - LHR (London)
+POST http://localhost:5062/airports
+Content-Type: application/json
+
+{
+  "iata": "LHR",
+  "name": "London Heathrow Airport",
+  "latitude": 51.4700,
+  "longitude": -0.4543
+}
+
+### Create Airport - GRU (São Paulo)
+POST http://localhost:5062/airports
+Content-Type: application/json
+
+{
+  "iata": "GRU",
+  "name": "São Paulo/Guarulhos International Airport",
+  "latitude": -23.4356,
+  "longitude": -46.4731
+}
+
+### Search Airports (All)
+GET http://localhost:5062/airports/search?searchTerm=&page=1&pageSize=100
+Accept: application/json
+
+### Search Airports (By Name)
+GET http://localhost:5062/airports/search?searchTerm=Kennedy&page=1&pageSize=10
+Accept: application/json
+
+### Get Airport by ID (Replace with actual ID)
+GET http://localhost:5062/airports/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+### ============================================
+### AIRCRAFTS
+### ============================================
+
+### Create Aircraft - Boeing 737-800
+POST http://localhost:5062/aircrafts
+Content-Type: application/json
+
+{
+  "model": "Boeing 737-800",
+  "cruiseSpeedKts": 450,
+  "fuelBurnPerHourKg": 2500,
+  "takeoffFuelKg": 500
+}
+
+### Create Aircraft - Airbus A320
+POST http://localhost:5062/aircrafts
+Content-Type: application/json
+
+{
+  "model": "Airbus A320",
+  "cruiseSpeedKts": 447,
+  "fuelBurnPerHourKg": 2400,
+  "takeoffFuelKg": 450
+}
+
+### Create Aircraft - Boeing 777-300ER
+POST http://localhost:5062/aircrafts
+Content-Type: application/json
+
+{
+  "model": "Boeing 777-300ER",
+  "cruiseSpeedKts": 490,
+  "fuelBurnPerHourKg": 6800,
+  "takeoffFuelKg": 1200
+}
+
+### Get All Aircrafts
+GET http://localhost:5062/aircrafts
+Accept: application/json
+
+### Get Aircraft by ID (Replace with actual ID)
+GET http://localhost:5062/aircrafts/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+### ============================================
+### FLIGHTS
+### ============================================
+
+### Create Flight (JFK -> LAX)
+# Note: Replace IDs with actual values from previous requests
+POST http://localhost:5062/flights
+Content-Type: application/json
+
+{
+  "originAirportId": "00000000-0000-0000-0000-000000000000",
+  "destinationAirportId": "00000000-0000-0000-0000-000000000000",
+  "aircraftId": "00000000-0000-0000-0000-000000000000",
+  "departureAt": "2025-10-27T10:00:00Z"
+}
+
+### Get All Flights
+GET http://localhost:5062/flights
+Accept: application/json
+
+### Get Flight by ID (Replace with actual ID)
+GET http://localhost:5062/flights/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+### Update Flight (Replace with actual IDs)
+PUT http://localhost:5062/flights/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "originAirportId": "00000000-0000-0000-0000-000000000000",
+  "destinationAirportId": "00000000-0000-0000-0000-000000000000",
+  "aircraftId": "00000000-0000-0000-0000-000000000000",
+  "departureAt": "2025-10-28T14:00:00Z"
+}
+
+### Delete Flight (Replace with actual ID)
+DELETE http://localhost:5062/flights/00000000-0000-0000-0000-000000000000
+
+### ============================================
+### REPORTS
+### ============================================
+
+### Get Flight Report (Complete)
+GET http://localhost:5062/reports
+Accept: application/json
+
+### Get Flight Summary (Statistics)
+GET http://localhost:5062/reports/summary
+Accept: application/json
+
+###

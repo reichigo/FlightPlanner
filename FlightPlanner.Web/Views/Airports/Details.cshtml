@@ -1,0 +1,52 @@
+@model FlightPlanner.Web.Models.AirportViewModel
+
+@{
+    ViewData["Title"] = "Airport Details";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-airplane"></i> Airport Details
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">IATA Code</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-info fs-5">@Model.Iata</span>
+                        </dd>
+
+                        <dt class="col-sm-3">Name</dt>
+                        <dd class="col-sm-9">@Model.Name</dd>
+
+                        <dt class="col-sm-3">Location</dt>
+                        <dd class="col-sm-9">
+                            <i class="bi bi-geo-alt"></i> 
+                            Latitude: @Model.Latitude.ToString("F4")°, 
+                            Longitude: @Model.Longitude.ToString("F4")°
+                        </dd>
+
+                        <dt class="col-sm-3">ID</dt>
+                        <dd class="col-sm-9">
+                            <small class="text-muted">@Model.Id</small>
+                        </dd>
+                    </dl>
+
+                    <div class="mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

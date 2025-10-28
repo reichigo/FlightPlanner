@@ -1,0 +1,90 @@
+@model FlightPlanner.Web.Models.FlightViewModel
+
+@{
+    ViewData["Title"] = "Flight Details";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-airplane-fill"></i> Flight Details
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h4 class="text-center">
+                                <span class="badge bg-info">@Model.Origin.Iata</span>
+                                <i class="bi bi-arrow-right mx-3"></i>
+                                <span class="badge bg-info">@Model.Destination.Iata</span>
+                            </h4>
+                            <p class="text-center text-muted">
+                                @Model.Origin.Name → @Model.Destination.Name
+                            </p>
+                        </div>
+                    </div>
+
+                    <dl class="row">
+                        <dt class="col-sm-3">Flight ID</dt>
+                        <dd class="col-sm-9">
+                            <small class="text-muted">@Model.Id</small>
+                        </dd>
+
+                        <dt class="col-sm-3">Aircraft</dt>
+                        <dd class="col-sm-9">
+                            <strong>@Model.Aircraft.Model</strong>
+                            <br>
+                            <small class="text-muted">
+                                Cruise Speed: @Model.Aircraft.CruiseSpeedKts kts | 
+                                Fuel Burn: @Model.Aircraft.FuelBurnPerHourKg kg/h
+                            </small>
+                        </dd>
+
+                        @if (Model.DepartureAt.HasValue)
+                        {
+                            <dt class="col-sm-3">Departure</dt>
+                            <dd class="col-sm-9">
+                                <i class="bi bi-calendar-event"></i> 
+                                @Model.DepartureAt.Value.ToString("dd/MM/yyyy HH:mm")
+                            </dd>
+                        }
+
+                        @if (Model.Estimates != null)
+                        {
+                            <dt class="col-sm-3">Distance</dt>
+                            <dd class="col-sm-9">
+                                <i class="bi bi-rulers"></i> 
+                                @Model.Estimates.DistanceKm.ToString("N2") km
+                            </dd>
+
+                            <dt class="col-sm-3">Duration</dt>
+                            <dd class="col-sm-9">
+                                <i class="bi bi-clock"></i>
+                                @Model.Estimates.Duration.ToString("hh\\:mm")
+                            </dd>
+
+                            <dt class="col-sm-3">Fuel Required</dt>
+                            <dd class="col-sm-9">
+                                <i class="bi bi-fuel-pump"></i>
+                                @Model.Estimates.FuelKg.ToString("N2") kg
+                            </dd>
+                        }
+                    </dl>
+
+                    <div class="mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

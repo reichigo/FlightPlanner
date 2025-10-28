@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  flightplanner:
+    image: mongo:latest
+    container_name: flightplanner
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: FlightPlannerDb
+    volumes:
+      - flightplanner_data:/data/db
+    networks:
+      - flightplanner_network
+
+volumes:
+  flightplanner_data:
+    driver: local
+
+networks:
+  flightplanner_network:
+    driver: bridge
+

@@ -1,0 +1,100 @@
+@model List<FlightPlanner.Web.Models.FlightViewModel>
+
+@{
+    ViewData["Title"] = "Flights";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-calendar-check-fill text-primary me-2"></i>Flights</h1>
+    <div>
+        <a asp-action="Report" class="btn btn-info me-2">
+            <i class="bi bi-bar-chart me-2"></i>View Report
+        </a>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Plan New Flight
+        </a>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        No flights found. <a asp-action="Create">Plan your first flight</a>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var flight in Model)
+        {
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <h5 class="mb-1">
+                                    <span class="badge bg-primary">@flight.Origin.Iata</span>
+                                </h5>
+                                <small class="text-muted">@flight.Origin.Name</small>
+                            </div>
+                            
+                            <div class="col-md-1 text-center">
+                                <i class="bi bi-arrow-right text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <h5 class="mb-1">
+                                    <span class="badge bg-success">@flight.Destination.Iata</span>
+                                </h5>
+                                <small class="text-muted">@flight.Destination.Name</small>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="small">
+                                    <div><i class="bi bi-airplane me-1"></i><strong>@flight.Aircraft.Model</strong></div>
+                                    @if (flight.Estimates != null)
+                                    {
+                                        <div class="text-muted">
+                                            <i class="bi bi-rulers me-1"></i>@flight.Estimates.DistanceKm.ToString("F0") km
+                                        </div>
+                                        <div class="text-muted">
+                                            <i class="bi bi-fuel-pump me-1"></i>@flight.Estimates.FuelKg.ToString("F0") kg
+                                        </div>
+                                    }
+                                    @if (flight.DepartureAt.HasValue)
+                                    {
+                                        <div class="text-muted">
+                                            <i class="bi bi-calendar me-1"></i>@flight.DepartureAt.Value.ToString("g")
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-2 text-end">
+                                <a asp-action="Details" asp-route-id="@flight.Id" class="btn btn-sm btn-outline-primary me-1">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@flight.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this flight?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+

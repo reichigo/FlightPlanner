@@ -1,0 +1,96 @@
+name: Build and deploy ASP.Net Core app to Azure Web App - FlightPlannerApi
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # .NET 10 RC (pré-release)
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          include-prerelease: true
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      # Publica self-contained linux-x64 (leva o runtime RC junto)
+      - name: dotnet publish (self-contained linux-x64 single-file)
+        run: |
+          dotnet --info
+          dotnet publish ./FlightPlanner.Api/FlightPlanner.Api.csproj -c Release -r linux-x64 \
+            --self-contained true \
+            -p:UseAppHost=true \
+            -p:PublishSingleFile=true \
+            -p:IncludeNativeLibrariesForSelfExtract=true \
+            -o ./publish
+          echo "Conteúdo gerado em ./publish:"
+          ls -la ./publish
+          cd publish && zip -r ../publish.zip . && cd ..
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: publish.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      # Disponível no ambiente da pipeline (se algum passo precisar)
+      MongoDbSettings__ConnectionString: ${{ secrets.MONGO_CON }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+
+      # Checagem básica de secrets
+      - name: Precheck OIDC secrets
+        run: |
+          [ -n "${{ secrets.AZUREAPPSERVICE_CLIENTID_D14BF89AC4224F969CD55A9AD6E926A3 }}" ] || (echo "missing secret AZUREAPPSERVICE_CLIENTID_D14BF89AC4224F969CD55A9AD6E926A3" && exit 1)
+          [ -n "${{ secrets.AZUREAPPSERVICE_TENANTID_A88A3F2A14394A1B99A6A511990D16F9 }}" ] || (echo "missing secret AZUREAPPSERVICE_TENANTID_A88A3F2A14394A1B99A6A511990D16F9" && exit 1)
+          [ -n "${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_59176E40B1494FB5BFF887E7A1417A89 }}" ] || (echo "missing secret AZUREAPPSERVICE_SUBSCRIPTIONID_59176E40B1494FB5BFF887E7A1417A89" && exit 1)
+          [ -n "${{ secrets.MONGO_CON }}" ] || (echo "missing secret MONGO_CON" && exit 1)
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D14BF89AC4224F969CD55A9AD6E926A3 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A88A3F2A14394A1B99A6A511990D16F9 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_59176E40B1494FB5BFF887E7A1417A89 }}
+
+      # Define App Settings no Web App (Mongo + porta 8080 para healthcheck)
+      - name: Set Azure Web App settings
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az webapp config appsettings set \
+              --resource-group "mypethere" \
+              --name "FlightPlannerApi" \
+              --settings \
+                MongoDbSettings__ConnectionString='${{ secrets.MONGO_CON }}' \
+                ASPNETCORE_URLS='http://0.0.0.0:8080'
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'FlightPlannerApi'
+          slot-name: 'Production'
+          package: publish.zip

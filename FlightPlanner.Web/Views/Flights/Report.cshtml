@@ -1,0 +1,170 @@
+@model FlightPlanner.Web.Models.FlightReportViewModel
+
+@{
+    ViewData["Title"] = "Flight Report";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>📊 Flight Report</h1>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Flights
+        </a>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow">
+                <div class="card-body">
+                    <h5 class="card-title">✈️ Total Flights</h5>
+                    <h2 class="display-4">@Model.TotalFlights</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success shadow">
+                <div class="card-body">
+                    <h5 class="card-title">🌍 Total Distance</h5>
+                    <h2 class="display-4">@Model.TotalDistanceKm.ToString("N0")</h2>
+                    <p class="mb-0">kilometers</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning shadow">
+                <div class="card-body">
+                    <h5 class="card-title">⛽ Total Fuel</h5>
+                    <h2 class="display-4">@Model.TotalFuelKg.ToString("N0")</h2>
+                    <p class="mb-0">kilograms</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flights List -->
+    @if (Model.Flights == null || !Model.Flights.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No flights found. <a asp-action="Create">Create one now</a>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">Flight Details</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Route</th>
+                                <th>Aircraft</th>
+                                <th>Departure</th>
+                                <th>Distance</th>
+                                <th>Duration</th>
+                                <th>Fuel</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var flight in Model.Flights)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@flight.Origin.Iata</strong>
+                                        <i class="bi bi-arrow-right"></i>
+                                        <strong>@flight.Destination.Iata</strong>
+                                        <br />
+                                        <small class="text-muted">
+                                            @flight.Origin.Name → @flight.Destination.Name
+                                        </small>
+                                    </td>
+                                    <td>@flight.Aircraft.Model</td>
+                                    <td>
+                                        @if (flight.DepartureAt.HasValue)
+                                        {
+                                            @flight.DepartureAt.Value.ToString("dd/MM/yyyy HH:mm")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Not scheduled</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (flight.Estimates != null)
+                                        {
+                                            @flight.Estimates.DistanceKm.ToString("N2") <text>km</text>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">N/A</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (flight.Estimates != null)
+                                        {
+                                            @flight.Estimates.Duration.ToString(@"hh\:mm")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">N/A</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (flight.Estimates != null)
+                                        {
+                                            @flight.Estimates.FuelKg.ToString("N2") <text>kg</text>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">N/A</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@flight.Id" class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>📈 Average Statistics</strong>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>Average Distance:</strong> @((Model.TotalFlights > 0 ? Model.TotalDistanceKm / Model.TotalFlights : 0).ToString("N2")) km</li>
+                            <li><strong>Average Fuel:</strong> @((Model.TotalFlights > 0 ? Model.TotalFuelKg / Model.TotalFlights : 0).ToString("N2")) kg</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>🌍 Environmental Impact</strong>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>CO₂ Emissions (est):</strong> @((Model.TotalFuelKg * 3.15).ToString("N2")) kg</li>
+                            <li><strong>Fuel Efficiency:</strong> @((Model.TotalDistanceKm > 0 ? Model.TotalFuelKg / Model.TotalDistanceKm : 0).ToString("N2")) kg/km</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

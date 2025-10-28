@@ -1,0 +1,105 @@
+name: Build and deploy ASP.Net Core app to Azure Web App - FlightPlannerWeb
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET (RC; 10)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          include-prerelease: true
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: dotnet publish (self-contained linux-x64 single-file)
+        run: |
+          dotnet --info
+          dotnet publish ./FlightPlanner.Web/FlightPlanner.Web.csproj -c Release -r linux-x64 \
+            --self-contained true \
+            -p:UseAppHost=true \
+            -p:PublishSingleFile=true \
+            -p:IncludeNativeLibrariesForSelfExtract=true \
+            -o ./publish
+          echo "Conteúdo gerado em ./publish:"
+          ls -la ./publish
+          cd publish && zip -r ../publish.zip . && cd ..
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: flightplanner-web
+          path: publish.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      # Disponível no ambiente da pipeline (se algum passo precisar)
+      ApiSettings__BaseUrl: ${{ secrets.API_URL }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: flightplanner-web
+
+      - name: Precheck OIDC secrets
+        run: |
+          [ -n "${{ secrets.AZUREAPPSERVICE_CLIENTID_BE92A1BAF043434A996F8E35DAFDAD0A }}" ] || (echo "missing secret CLIENTID" && exit 1)
+          [ -n "${{ secrets.AZUREAPPSERVICE_TENANTID_C7BBFF30A8BF405FB1D68F3B57B7332C }}" ] || (echo "missing secret TENANTID" && exit 1)
+          [ -n "${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_388D3B0BD97C4DFF8BB17558527DA27C }}" ] || (echo "missing secret SUBSCRIPTIONID" && exit 1)
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_BE92A1BAF043434A996F8E35DAFDAD0A }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C7BBFF30A8BF405FB1D68F3B57B7332C }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_388D3B0BD97C4DFF8BB17558527DA27C }}
+
+      # App settings necessárias (porta e bind)
+      - name: Set Azure Web App settings
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az webapp config appsettings set \
+              --resource-group "mypethere" \
+              --name "FlightPlannerWeb" \
+              --settings \
+                ASPNETCORE_URLS='http://0.0.0.0:8080' \
+                WEBSITES_PORT='8080'
+
+      
+      - name: Set startup file to self-contained executable
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az webapp config set \
+              --resource-group "mypethere" \
+              --name "FlightPlannerWeb" \
+              --startup-file "./FlightPlanner.Web"
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'FlightPlannerWeb'
+          slot-name: 'Production'
+          package: publish.zip
+
+
+
