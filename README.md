@@ -1,8 +1,3 @@
-# 🫢 Before anything else
-I sometimes like to joke around and play games too. You might find some issues in my application, but there’s one that’s serious can you figure it out? ❤️
-
----
-
 # ✈️ FlightPlanner
 
 A comprehensive flight planning application built with **ASP.NET Core 10.0** and **MongoDB**, following **Clean Architecture** principles. This system allows users to manage airports, aircraft, and flights while automatically calculating distances, flight times, and fuel requirements.
